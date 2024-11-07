@@ -129,6 +129,7 @@ function startNewGame() {
     feedbackLabel.textContent = '';
     guessGrid.innerHTML = '';
     playerSelect.value = 'Select a player';
+    guessGrid.style.visibility = 'visible';
 
     // Start the timer
     clearInterval(timerInterval);
