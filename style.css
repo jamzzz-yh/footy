@@ -84,3 +84,15 @@ body {
     overflow: auto; /* This ensures scrolling is enabled */
 }
 
+body {
+    overflow: auto; /* This will enable scrolling */
+}
+
+#guess-grid {
+    height: auto; /* Or remove fixed height */
+    max-height: 100vh; /* To limit the height if needed */
+}
+
+html, body {
+    height: 100%;
+}
