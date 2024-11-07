@@ -79,3 +79,8 @@ img {
     height: 60px;
     border-radius: 50%;
 }
+
+body {
+    overflow: auto; /* This ensures scrolling is enabled */
+}
+
