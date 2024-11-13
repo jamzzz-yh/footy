@@ -110,27 +110,41 @@ function selectRandomPlayer() {
     const randomIndex = Math.floor(Math.random() * playersDatabase.length);
     targetPlayer = playersDatabase[randomIndex];
 }
+// Function to start a new round
 function startNewRound() {
-    // Select a random player from the playersDatabase
-    const randomIndex = Math.floor(Math.random() * playersDatabase.length);
-    targetPlayer = playersDatabase[randomIndex];
-
-    // Reset attempts, feedback, and UI for a new round
+    // Reset the target player and attempts
+    targetPlayer = playersDatabase[Math.floor(Math.random() * playersDatabase.length)];
     attempts = 0;
-    feedbackLabel.textContent = "Make a guess!";
-    guessGrid.innerHTML = "";  // Clear previous guesses
-    scoreLabel.textContent = `Score: ${score}`;
-    
-    // Start timer if you have a time limit per round
-    startTimer();
-    
-    console.log(`New round started. Target player is: ${targetPlayer.name}`);
+
+    // Clear feedback, reset the timer, and other elements
+    feedbackLabel.textContent = "";
+    guessGrid.innerHTML = "";
+    timeElapsed = 0;
+    updateTimer();
+
+    // Enable the submit button and reset its appearance
+    submitButton.disabled = true;
+    submitButton.classList.add("disabled");
+
+    // Enable the player select dropdown and add event listener for enabling the submit button
+    playerSelect.value = ""; // Reset the dropdown
+    playerSelect.addEventListener("change", enableSubmitButton);
 }
 
-// Start the first round when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    startNewRound();
-});
+// Function to enable the submit button only if a player is selected
+function enableSubmitButton() {
+    if (playerSelect.value !== "") {
+        submitButton.disabled = false;
+        submitButton.classList.remove("disabled");
+    }
+}
+
+// Add event listener to the new round button to start a new round
+newRoundButton.addEventListener("click", startNewRound);
+
+// Initialize the first round when the page loads
+document.addEventListener("DOMContentLoaded", startNewRound);
+
 
 // Start a new round when the "New Round" button is clicked
 newRoundButton.addEventListener("click", startNewRound);
