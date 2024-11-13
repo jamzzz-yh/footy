@@ -77,7 +77,7 @@ let score = 0;
 let timeElapsed = 0;
 let timerInterval;
 
-// Select player and submit guess
+// Player and UI element references
 const playerSelect = document.getElementById("player-select");
 const submitButton = document.getElementById("submit-btn");
 const guessGrid = document.getElementById("guess-grid");
@@ -87,11 +87,10 @@ const timerLabel = document.getElementById("timer");
 const newRoundButton = document.getElementById("new-round-btn");
 const resetButton = document.getElementById("reset-btn");
 
-// Wait for DOM content to be fully loaded before populating the dropdown
+// Initialize the dropdown with player options after the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM Loaded');
 
-    // Populate the player select dropdown with player names
     if (playerSelect) {
         playersDatabase.forEach(player => {
             const option = document.createElement("option");
@@ -101,104 +100,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Start the first round
+    // Start a new round
     startNewRound();
-});
-
-// Function to pick a new random player
-function selectRandomPlayer() {
-    const randomIndex = Math.floor(Math.random() * playersDatabase.length);
-    targetPlayer = playersDatabase[randomIndex];
-}
-// Function to start a new round
-function startNewRound() {
-    // Reset the target player and attempts
-    targetPlayer = playersDatabase[Math.floor(Math.random() * playersDatabase.length)];
-    attempts = 0;
-
-    // Clear feedback, reset the timer, and other elements
-    feedbackLabel.textContent = "";
-    guessGrid.innerHTML = "";
-    timeElapsed = 0;
-    updateTimer();
-
-    // Enable the submit button and reset its appearance
-    submitButton.disabled = true;
-    submitButton.classList.add("disabled");
-
-    // Enable the player select dropdown and add event listener for enabling the submit button
-    playerSelect.value = ""; // Reset the dropdown
-    playerSelect.addEventListener("change", enableSubmitButton);
-}
-
-// Function to enable the submit button only if a player is selected
-function enableSubmitButton() {
-    if (playerSelect.value !== "") {
-        submitButton.disabled = false;
-        submitButton.classList.remove("disabled");
-    }
-}
-
-// Add event listener to the new round button to start a new round
-newRoundButton.addEventListener("click", startNewRound);
-
-// Initialize the first round when the page loads
-document.addEventListener("DOMContentLoaded", startNewRound);
-
-
-// Start a new round when the "New Round" button is clicked
-newRoundButton.addEventListener("click", startNewRound);
-// Start a new game
-function startNewGame() {
-    targetPlayer = playersDatabase[Math.floor(Math.random() * playersDatabase.length)];
-    console.log("New Target Player: ", targetPlayer.name); // Log to check if the target player is changing
-
-    attempts = 0;
-    score = 0;
-    timeElapsed = 0;
-    scoreLabel.textContent = `Score: ${score}`;
-    feedbackLabel.textContent = '';
-    guessGrid.innerHTML = '';
-    playerSelect.value = 'Select a player';
-    guessGrid.style.visibility = 'visible';
 
     // Start the timer
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-        timeElapsed++;
-        timerLabel.textContent = `Time: ${timeElapsed}s`;
-    }, 1000);
-}
+    startTimer();
+});
 
-// Submit guess
-submitButton.addEventListener("click", submitGuess);
-
-function submitGuess() {
+// Handle the submit button click
+submitButton.addEventListener('click', () => {
     const selectedPlayerName = playerSelect.value;
+
+    if (!selectedPlayerName) {
+        feedbackLabel.textContent = "Please select a player!";
+        return;
+    }
+
     const selectedPlayer = playersDatabase.find(player => player.name === selectedPlayerName);
-
     if (!selectedPlayer) {
-        feedbackLabel.textContent = "Please select a valid player!";
+        feedbackLabel.textContent = "Selected player not found!";
         return;
     }
 
-    const guessedPlayer = playersDatabase.find(player => player.name === guessedPlayerName);
-    if (!guessedPlayer) {
-        alert("Player not found!");
-        return;
-    }
+    // Increase the attempts and check the guess
+    attempts++;
+    checkGuess(selectedPlayer);
+});
 
-    // Increment attempts
-     attempts++;
-    if (selectedPlayer.name === targetPlayer.name) {
-        feedbackLabel.textContent = `Correct! It's ${targetPlayer.name}`;
-        score++;
-        scoreLabel.textContent = `Score: ${score}`;
-        newRoundButton.disabled = false;  // Enable the button to start a new round
-    } else {
-        feedbackLabel.textContent = "Incorrect, try again!";
-    }
+// Function to start a new round
+function startNewRound() {
+    targetPlayer = playersDatabase[Math.floor(Math.random() * playersDatabase.length)];
+    attempts = 0;
+    feedbackLabel.textContent = "Guess the player!";
+    scoreLabel.textContent = `Score: ${score}`;
+    resetTimer();
 }
+
 
     // Compare guessed player with the target player
     const feedback = comparePlayers(guessedPlayer, targetPlayer);
