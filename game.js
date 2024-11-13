@@ -110,18 +110,30 @@ function selectRandomPlayer() {
     const randomIndex = Math.floor(Math.random() * playersDatabase.length);
     targetPlayer = playersDatabase[randomIndex];
 }
-
-// Function to start a new round
 function startNewRound() {
-    selectRandomPlayer(); // Select a new player for each round
+    // Select a random player from the playersDatabase
+    const randomIndex = Math.floor(Math.random() * playersDatabase.length);
+    targetPlayer = playersDatabase[randomIndex];
+
+    // Reset attempts, feedback, and UI for a new round
     attempts = 0;
-    feedbackLabel.textContent = ''; // Clear feedback from previous rounds
-    console.log('New round started with player:', targetPlayer.name);
+    feedbackLabel.textContent = "Make a guess!";
+    guessGrid.innerHTML = "";  // Clear previous guesses
+    scoreLabel.textContent = `Score: ${score}`;
+    
+    // Start timer if you have a time limit per round
+    startTimer();
+    
+    console.log(`New round started. Target player is: ${targetPlayer.name}`);
 }
 
-// Add event listeners
-newRoundButton.addEventListener('click', startNewRound);
+// Start the first round when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    startNewRound();
+});
 
+// Start a new round when the "New Round" button is clicked
+newRoundButton.addEventListener("click", startNewRound);
 // Start a new game
 function startNewGame() {
     targetPlayer = playersDatabase[Math.floor(Math.random() * playersDatabase.length)];
