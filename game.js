@@ -95,27 +95,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (playerSelect) {
         playersDatabase.forEach(player => {
             const option = document.createElement("option");
-            option.value = player.name; // Set the value to player name
-            option.textContent = player.name; // Display player name in the dropdown
+            option.value = player.name;
+            option.textContent = player.name;
             playerSelect.appendChild(option);
         });
-    } else {
-        console.error("Player dropdown not found.");
     }
 
-    // Log to check the dropdown population
-    console.log(playerSelect.innerHTML);
+    // Start the first round
+    startNewRound();
 });
 
-// Start a new round (same player)
-function startNewRound() {
-    attempts = 0;
-    feedbackLabel.textContent = '';
-    guessGrid.innerHTML = '';
-    playerSelect.value = 'Select a player';
-    submitButton.disabled = false;
-    feedbackLabel.style.color = 'black';
+// Function to pick a new random player
+function selectRandomPlayer() {
+    const randomIndex = Math.floor(Math.random() * playersDatabase.length);
+    targetPlayer = playersDatabase[randomIndex];
 }
+
+// Function to start a new round
+function startNewRound() {
+    selectRandomPlayer(); // Select a new player for each round
+    attempts = 0;
+    feedbackLabel.textContent = ''; // Clear feedback from previous rounds
+    console.log('New round started with player:', targetPlayer.name);
+}
+
+// Add event listeners
+newRoundButton.addEventListener('click', startNewRound);
 
 // Start a new game
 function startNewGame() {
