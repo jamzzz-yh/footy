@@ -160,9 +160,11 @@ function startNewGame() {
 submitButton.addEventListener("click", submitGuess);
 
 function submitGuess() {
-    const guessedPlayerName = playerSelect.value;
-    if (!guessedPlayerName || guessedPlayerName === 'Select a player') {
-        alert("Please select a player.");
+    const selectedPlayerName = playerSelect.value;
+    const selectedPlayer = playersDatabase.find(player => player.name === selectedPlayerName);
+
+    if (!selectedPlayer) {
+        feedbackLabel.textContent = "Please select a valid player!";
         return;
     }
 
@@ -173,7 +175,16 @@ function submitGuess() {
     }
 
     // Increment attempts
-    attempts++;
+     attempts++;
+    if (selectedPlayer.name === targetPlayer.name) {
+        feedbackLabel.textContent = `Correct! It's ${targetPlayer.name}`;
+        score++;
+        scoreLabel.textContent = `Score: ${score}`;
+        newRoundButton.disabled = false;  // Enable the button to start a new round
+    } else {
+        feedbackLabel.textContent = "Incorrect, try again!";
+    }
+}
 
     // Compare guessed player with the target player
     const feedback = comparePlayers(guessedPlayer, targetPlayer);
